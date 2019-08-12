@@ -30,7 +30,7 @@ class DB
     return $data;
   }
 
-  public function fetchOne(string $query, $params)
+  public function fetchOne(string $query, $params = [])
   {
     $pdo = $this->getConnection();
     $prepared = $pdo->prepare($query);

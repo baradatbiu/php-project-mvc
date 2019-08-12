@@ -1,6 +1,6 @@
 <?php
 
-class modelUser
+class modelUser extends DB
 {
   public function userAuth($userData)
   {
@@ -13,17 +13,15 @@ class modelUser
     }
   }
 
-  static function getAllUsers()
+  public function getAllUsers()
   {
-    $db = new DB();
-    $users = $db->fetchAll('SELECT * FROM users ORDER BY age');
+    $users = $this->fetchAll('SELECT * FROM users ORDER BY age');
     return $users;
   }
 
   public function getUserByLogin(string $login)
   {
-    $db = new DB();
-    $user = $db->fetchOne('SELECT * FROM users WHERE login LIKE ?', $login);
+    $user = $this->fetchOne('SELECT * FROM users WHERE login LIKE ?', $login);
     return $user;
   }
 
@@ -32,14 +30,13 @@ class modelUser
     $user = $this->getUserByLogin($userData["login"]);
     if (!$user) {
       $password = $this->genPasswordHash($userData["password"]);
-      $db = new DB();
       $fileName = basename($file['name']);
       $filePath = '/img/' . $fileName;
       $filePut = __DIR__ . '/../../public' . $filePath;
       $tmp_name = $file["tmp_name"];
       move_uploaded_file($tmp_name, "$filePut");
       $userData['photo'] = $filePath;
-      $db->exec(
+      $this->exec(
         "INSERT INTO users (`login`, password, name, age, description, photo)
                 VALUES (:login, :pass, :name, :age, :description, :photo)",
         [
@@ -52,9 +49,9 @@ class modelUser
         ]
       );
 
-      $userId = $db->lastInsertId();
+      $userId = $this->lastInsertId();
 
-      $db->exec(
+      $this->exec(
         "INSERT INTO files (user_id, name, url)
                 VALUES (:user_id, :name, :url)",
         [

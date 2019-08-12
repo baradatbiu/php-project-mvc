@@ -12,7 +12,7 @@ class Index
       return false;
     }
     $modelUser = new modelUser();
-    $this->view->users = $modelUser::getAllUsers();
+    $this->view->users = $modelUser->getAllUsers();
 
   }
 
@@ -24,15 +24,12 @@ class Index
       return false;
     }
     $modelFile = new modelFile();
-    $this->view->files = $modelFile::getFiles($userId);
+    $this->view->files = $modelFile->getFiles($userId);
   }
 
   public function regAction()
   {
-    if ($_SERVER["REQUEST_METHOD"] === "POST") {
-      if (empty($_POST['login']) || empty($_POST["password"]) || empty($_POST["confirm_password"])) {
-        return false;
-      }
+    if ($_SERVER["REQUEST_METHOD"] === "POST" && $_POST['login'] && $_POST["password"] && $_POST["confirm_password"]) {
 
       if ($_POST['password'] !== $_POST["confirm_password"]) {
         return false;
@@ -43,23 +40,25 @@ class Index
 
       $_SESSION["user_id"] = $user;
       header('Location: /index/list');
+    } else {
+      return false;
     }
   }
 
   public function indexAction()
   {
-    if ($_SERVER["REQUEST_METHOD"] === "POST") {
-      if ($_POST['login'] && $_POST["password"]) {
-        $modelUser = new modelUser();
-        $user = $modelUser->userAuth($_POST);
+    if ($_SERVER["REQUEST_METHOD"] === "POST" && $_POST['login'] && $_POST["password"]) {
+      $modelUser = new modelUser();
+      $user = $modelUser->userAuth($_POST);
 
-        if (!$user) {
-          return false;
-        }
-
-        $_SESSION["user_id"] = $user;
-        header('Location: /index/list');
+      if (!$user) {
+        return false;
       }
+
+      $_SESSION["user_id"] = $user;
+      header('Location: /index/list');
+    } else {
+      return false;
     }
   }
 }
