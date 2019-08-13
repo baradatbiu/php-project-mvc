@@ -62,7 +62,7 @@
           <?php foreach ($this->files as $file) : ?>
               <tr>
                   <td><?= $file["name"] ?></td>
-                  <td><img src="<?= $file["url"] ?>" alt=""></td>
+                  <td><img src="<?= $file["url"] ?>" style="max-width: 100px; height: auto;"></td>
               </tr>
           <?php endforeach; ?>
         <?php endif; ?>

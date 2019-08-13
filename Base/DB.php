@@ -1,67 +1,20 @@
 <?php
+require_once '../vendor/autoload.php';
+$config = include 'config.php';
 
-class DB
-{
-  /** @var PDO */
-  private $pdo;
+use Illuminate\Database\Capsule\Manager as Capsule;
+$capsule = new Capsule;
 
-  private function getConnection()
-  {
-    $config = include 'config.php';
+$capsule->addConnection([
+  'driver'    => 'mysql',
+  'host'      => $config['host'],
+  'database'  => $config['db_name'],
+  'username'  => $config['db_user'],
+  'password'  => $config['db_password'],
+  'charset'   => 'utf8',
+  'collation' => 'utf8_unicode_ci',
+  'prefix'    => '',
+]);
 
-    if (!$this->pdo) {
-      $this->pdo = new PDO("mysql:host={$config['host']}:{$config['port']};dbname={$config['db_name']}",
-        $config['db_user'], $config['db_password']);
-    }
-    return $this->pdo;
-  }
-
-  public function fetchAll(string $query, array $params = [])
-  {
-    $pdo = $this->getConnection();
-    $prepared = $pdo->prepare($query);
-    $ret = $prepared->execute($params);
-    if (!$ret) {
-      $errorInfo = $prepared->errorInfo();
-      trigger_error("{$errorInfo[0]}#{$errorInfo[1]}: " . $errorInfo[2]);
-      return [];
-    }
-    $data = $prepared->fetchAll(\PDO::FETCH_ASSOC);
-    return $data;
-  }
-
-  public function fetchOne(string $query, $params = [])
-  {
-    $pdo = $this->getConnection();
-    $prepared = $pdo->prepare($query);
-    $ret = $prepared->execute([$params]);
-    if (!$ret) {
-      $errorInfo = $prepared->errorInfo();
-      trigger_error("{$errorInfo[0]}#{$errorInfo[1]}: " . $errorInfo[2]);
-      return [];
-    }
-    $data = $prepared->fetch(\PDO::FETCH_ASSOC);
-    if (!$data) {
-      return false;
-    }
-    return $data;
-  }
-
-  public function exec(string $query, array $params = [])
-  {
-    $pdo = $this->getConnection();
-    $prepared = $pdo->prepare($query);
-    $ret = $prepared->execute($params);
-    if (!$ret) {
-      $errorInfo = $prepared->errorInfo();
-      trigger_error("{$errorInfo[0]}#{$errorInfo[1]}: " . $errorInfo[2]);
-      return -1;
-    }
-    return true;
-  }
-
-  public function lastInsertId()
-  {
-    return $this->getConnection()->lastInsertId();
-  }
-}
+$capsule->setAsGlobal();
+$capsule->bootEloquent();

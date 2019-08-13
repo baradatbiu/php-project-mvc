@@ -1,11 +1,18 @@
 <?php
+use Illuminate\Database\Eloquent\Model as Eloquent;
 
-class modelFile extends DB
+class modelFile extends Eloquent
 {
-  public function getFiles(int $id)
+  protected $table = 'files';
+  public $timestamps = false;
+  protected $fillable = ['user_id', 'name', 'url'];
+
+  public function user()
   {
-    $query = "SELECT * FROM files WHERE user_id = $id";
-    $files = $this->fetchAll($query);
-    return $files;
+    return $this->belongsTo('User');
+  }
+  public function getFiles()
+  {
+    return $this->all();
   }
 }

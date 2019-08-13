@@ -12,8 +12,8 @@ class Index
       return false;
     }
     $modelUser = new modelUser();
-    $this->view->users = $modelUser->getAllUsers();
 
+    $this->view->users = $modelUser->getAllUsers();
   }
 
   public function filelistAction()
@@ -24,7 +24,7 @@ class Index
       return false;
     }
     $modelFile = new modelFile();
-    $this->view->files = $modelFile->getFiles($userId);
+    $this->view->files = $modelFile->getFiles();
   }
 
   public function regAction()

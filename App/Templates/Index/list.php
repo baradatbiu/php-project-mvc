@@ -69,7 +69,7 @@
               <td><?= $user['name'] ?></td>
               <td><?= $user['age'] ?></td>
               <td><?= $user['description'] ?></td>
-              <td><img src="<?= $user['photo'] ?>" alt=""></td>
+              <td><img src="<?= $user['photo'] ?>" style="max-width: 100px; height: auto;"></td>
               <td><?= $user['age'] > 18 ? 'Совершеннолетний' : 'Несовершеннолетний' ?></td>
           </tr>
         <?php endforeach; ?>
