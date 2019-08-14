@@ -61,6 +61,7 @@
             <th>Описание</th>
             <th>Фотография</th>
             <th>Доп. инф.</th>
+            <th>Управление</th>
         </tr>
       <?php if ($this->users) : ?>
         <?php foreach ($this->users as $user) : ?>
@@ -71,6 +72,7 @@
               <td><?= $user['description'] ?></td>
               <td><img src="<?= $user['photo'] ?>" style="max-width: 100px; height: auto;"></td>
               <td><?= $user['age'] > 18 ? 'Совершеннолетний' : 'Несовершеннолетний' ?></td>
+              <td><a href="redactor/<?=$user["id"]?>">Редактировать</a></td>
           </tr>
         <?php endforeach; ?>
       <?php endif; ?>

@@ -7,7 +7,7 @@ class modelUser extends Eloquent
 {
   protected $table = 'users';
   public $timestamps = false;
-  protected $fillable = ['login', 'name', 'password', 'email', 'description', 'age', 'photo'];
+  protected $fillable = ['login', 'name', 'password', 'description', 'age', 'photo'];
 
   public function file()
   {
@@ -36,6 +36,12 @@ class modelUser extends Eloquent
     return $user;
   }
 
+  public function getUserById(string $userId)
+  {
+    $user = $this->query()->where('id', $userId)->first()->toArray();
+    return $user;
+  }
+
   public function userRegister(array $userData, $file)
   {
     $user = $this->query()->where('login', $userData["login"])->first();
@@ -49,7 +55,7 @@ class modelUser extends Eloquent
       move_uploaded_file($tmp_name, "$filePut");
       $userData['photo'] = $filePath;
 
-      self::query()->create($userData)->first()->toArray();
+      self::query()->create($userData);
 
       $newUser = $this->getUserByLogin($userData["login"]);
       $userId = $newUser['id'];
@@ -65,6 +71,21 @@ class modelUser extends Eloquent
     } else {
       return false;
     }
+  }
+
+  public function userUpdate(array $userData, $userId, $file)
+  {
+    if ($file['name']) {
+      $fileName = basename($file['name']);
+      $filePath = '/img/' . $fileName;
+      $filePut = __DIR__ . '/../../public' . $filePath;
+      $tmp_name = $file["tmp_name"];
+      move_uploaded_file($tmp_name, "$filePut");
+      $userData['photo'] = $filePath;
+
+      File::query()->where('user_id', $userId)->update(['url' => $userData["photo"]]);
+    }
+    $this->query()->where('id', $userId)->update($userData);
   }
 
   public static function genPasswordHash(string $password)

@@ -7,6 +7,7 @@ $parts = explode('/', $_SERVER['REQUEST_URI']);
 session_start();
 $controllerName = $parts[1];
 $actionName = $parts[2];
+$actionParams = $parts[3] ?? '';
 $controllerFileName = ucfirst($controllerName);
 if ($controllerFileName !== 'Index') {
   header("HTTP/1.1 404 Not Found");
@@ -27,5 +28,5 @@ $tpl = '../App/Templates/' . $controllerFileName . '/' . $actionName . '.php';
 include "../Base/View.php";
 $view = new View();
 $controllerObj->view = $view;
-$controllerObj->$actionFuncName();
+$controllerObj->$actionFuncName($actionParams);
 $view->render($tpl);

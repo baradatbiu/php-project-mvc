@@ -61,4 +61,26 @@ class Index
       return false;
     }
   }
+
+  public function redactorAction($userId)
+  {
+    $modelUser = new modelUser();
+    $user = $modelUser->getUserById($userId);
+
+    if (!$user) {
+      header("HTTP/1.1 404 Not Found");
+      return false;
+    }
+    $this->view->user = $user;
+
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
+      $modelUser->userUpdate($_POST, $userId, $_FILES['photo']);
+
+      $_SESSION["user_id"] = $user;
+      header('Location: /index/list');
+    } else {
+      return false;
+    }
+  }
 }
